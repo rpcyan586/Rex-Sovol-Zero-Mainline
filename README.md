@@ -303,6 +303,7 @@ chamber commands, so this fallback does not boost the bed in that sequence.
 - `probe_pressure.py` — derived from Sovol OEM Klipper (GPLv3), based on upstream Klipper probe code
 - `axis_twist_pressure.py` — GPLv3; patches mainline axis twist cal to use load cell nozzle touch
 - `line_purge.cfg` — adapted from [pellcorp/creality](https://github.com/pellcorp/creality) (SimpleAF) `_LINE_PURGE` and KAMP
+- `chamber_macros.cfg` — exhaust PI loop and `M141`/`M191` from rpcyan's [PID Controlled Exhaust Fan](https://forum.sovol3d.com/t/9025) forum thread
 
 ## License
 
