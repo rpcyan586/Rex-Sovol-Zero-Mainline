@@ -267,7 +267,7 @@ The direct commands distinguish control from waiting:
 | Command | Behavior |
 |---|---|
 | `M141 S40` | Set the chamber control target to 40°C without waiting for it. |
-| `M191 S40` | Set the target and wait for at least `40 - tolerance` °C. |
+| `M191 S40` | Set the target and wait for at least `40 - tolerance` °C. The exhaust is off for the wait, and control restarts when it ends. |
 | `M191 R40` | Set the target and wait within `40 ± tolerance` °C. |
 | `M191 S40 TOL2` | Wait for at least 38°C and save a 2°C tolerance for subsequent waits. |
 | `M141 S0` | Turn chamber control off without a wait. |
