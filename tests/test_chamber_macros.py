@@ -269,6 +269,27 @@ class ChamberLoopTest(unittest.TestCase):
         self.assertIn("MAXIMUM", printer.waits[-1]["params"])
         self.assertTrue(printer.waits[-1]["timer"])
 
+    def test_m141_alone_does_not_stir(self):
+        printer = Printer()
+        printer.command("M140 S100")
+        printer.command("M141 S40")
+        self.assertEqual(printer.status["fan_generic part_cooling_fan"]["speed"], 0.0)
+        self.assertEqual(printer.status["extruder"]["target"], 0.0)
+
+    def test_m191_stirs_only_while_waiting(self):
+        printer = Printer()
+        printer.command("M140 S100")
+        printer.command("M191 S45")
+        self.assertEqual((printer.waits[-1]["part_fan"], printer.waits[-1]["hotend"]), (1.0, 46.0))
+        self.assertEqual(printer.status["fan_generic part_cooling_fan"]["speed"], 0.0)
+
+    def test_m191_leaves_a_running_part_fan_alone(self):
+        printer = Printer()
+        printer.command("SET_FAN_SPEED FAN=part_cooling_fan SPEED=0.5")
+        printer.command("M191 S45")
+        self.assertEqual(printer.waits[-1]["part_fan"], 0.5)
+        self.assertEqual(printer.status["fan_generic part_cooling_fan"]["speed"], 0.5)
+
     def test_status_reports_state(self):
         printer = self.primed_print()
         printer.command("CH_STATUS")

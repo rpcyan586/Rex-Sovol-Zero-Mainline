@@ -291,8 +291,11 @@ its target. While the bed or chamber heater is on, it keeps running through
 a dip such as an opened door. The fan and sensor sections it needs are listed
 at the top of [`config/chamber_macros.cfg`](config/chamber_macros.cfg).
 
-For positive targets, `M141` also enables stirring. Its calculated bed-target
-fallback runs only when the bed target is zero. Normal `PRINT_START` with a
+`M191` stirs while it waits. It runs the part fan at full if it was off, and
+raises the hotend to 46°C if it was lower, so the heat-break fan runs. The part
+fan goes back off after the wait. The hotend stays at 46°C until `PRINT_START`
+heats it for cleaning. A bare `M141` doesn't stir. `M141`'s calculated
+bed-target fallback runs only when the bed target is zero. Normal `PRINT_START` with a
 positive `BED` value has already set and waited for that bed target before the
 chamber commands, so this fallback does not boost the bed in that sequence.
 
