@@ -278,9 +278,9 @@ The direct commands distinguish control from waiting:
 later `M191` call restores the default tolerance **and performs that call's
 wait**. These temperatures illustrate command semantics, not material presets.
 
-`PRINT_START … CHAMBER=0` (or omitting `CHAMBER`) skips the chamber commands;
-it does **not** issue `M141 S0` or explicitly stop previously active control.
-Use `M141 S0` when an explicit off command is intended. It stops the chamber
+`PRINT_START … CHAMBER=0` issues `M141 S0`, so control left running by an
+earlier job stops. Omitting `CHAMBER` skips the chamber commands and leaves
+control as it was. `M141 S0` stops the chamber
 controller/exhaust and an optional chamber heater; it does not turn off the bed
 or hotend or reset the saved wait tolerance.
 

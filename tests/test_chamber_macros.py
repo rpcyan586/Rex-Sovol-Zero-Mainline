@@ -290,6 +290,25 @@ class ChamberLoopTest(unittest.TestCase):
         self.assertEqual(printer.waits[-1]["part_fan"], 0.5)
         self.assertEqual(printer.status["fan_generic part_cooling_fan"]["speed"], 0.5)
 
+    def print_start_chamber_lines(self, rawparams):
+        """PRINT_START reads only its params, so rendering it shows what it sends."""
+        config = configparser.RawConfigParser(strict=False, inline_comment_prefixes=(";", "#"))
+        config.read(CONFIG_DIR / "Macro.cfg", encoding="utf-8")
+        params = {key.upper(): value for key, value in re.findall(r"(\w+)=(\S+)", rawparams)}
+        out = jinja2.Environment("{%", "%}", "{", "}").from_string(
+            config["gcode_macro PRINT_START"]["gcode"]).render(params=params, rawparams=rawparams)
+        return [line.strip() for line in out.splitlines() if re.match(r"\s*M1[49]1\b", line)]
+
+    def test_print_start_chamber_zero_turns_control_off(self):
+        self.assertEqual(self.print_start_chamber_lines("BED=60 HOTEND=220 CHAMBER=0"), ["M141 S0"])
+
+    def test_print_start_without_chamber_leaves_control_alone(self):
+        self.assertEqual(self.print_start_chamber_lines("BED=60 HOTEND=220"), [])
+
+    def test_print_start_chamber_target_heats_and_waits(self):
+        self.assertEqual(self.print_start_chamber_lines("BED=100 HOTEND=250 CHAMBER=40"),
+                         ["M141 S40.0", "M191 S40.0"])
+
     def test_status_reports_state(self):
         printer = self.primed_print()
         printer.command("CH_STATUS")
